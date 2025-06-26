@@ -6,4 +6,15 @@ class ApplicationController < ActionController::Base
 
   skip_before_action :verify_authenticity_token
 
+  helper_method: current_user
+
+  def current_user
+    User.find_by(id: params[:id])
+  end
+
+  def authenticate_user
+    unless current_user
+      render json: {}, status: :unauthorized
+    end
+  end
 end
