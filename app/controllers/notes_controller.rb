@@ -1,6 +1,8 @@
 class NotesController < ApplicationController
+  before_action :authenticate_user
+
   def index
-    @notes = Note.all
+    @notes = current_user.notes
 
     render :index
   end
@@ -20,9 +22,13 @@ class NotesController < ApplicationController
   end
 
   def show
-    @note = Note.find_by(id: params[:id])
+    @note = current_user.notes.find_by(id: params[:id])
 
-    render :show
+    if @note
+      render :show
+    else
+      render json: { error: "Note not found" }, status: :bad_request
+    end
   end
 
   def update
