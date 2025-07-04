@@ -6,10 +6,10 @@ class ApplicationController < ActionController::Base
 
   skip_before_action :verify_authenticity_token
 
-  helper_method: current_user
+  helper_method :current_user
 
   def current_user
-    User.find_by(id: params[:id])
+    User.find_by(id: cookies.signed[:user_id])
   end
 
   def authenticate_user
