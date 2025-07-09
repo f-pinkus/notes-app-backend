@@ -32,15 +32,12 @@ class NotesController < ApplicationController
   end
 
   def update
-    @note = Note.find_by(id: params[:id])
+    @note = Note.find(params[:id])
 
-    @note.title = params[:title] || @note.title,
-    @note.body = params[:body] || @note.body
-    
-    if @note.save
-      render :show
+    if @note.update(note_params)
+      render json: @note, status: :ok
     else
-      render json: { errors: @note.errors.full_messages }, status: :bad_request
+      render json: { errors: @note.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -49,5 +46,11 @@ class NotesController < ApplicationController
 
     @note.destroy
     render json: { message: "Note deleted."}
+  end
+
+  private
+
+  def note_params
+    params.require(:note).permit(:title, :body)
   end
 end
